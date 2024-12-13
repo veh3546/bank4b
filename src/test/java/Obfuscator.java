@@ -25,9 +25,31 @@ public class Obfuscator {
         List<Owner> newOwners = new ArrayList<>();
         for (Owner o : rawObjects.owners()) {
             String new_ssn = "***-**-" + o.ssn().substring(7);
-            // other changes...
-            newOwners.add(new Owner(o.name(), o.id(), o.dob(), new_ssn, o.address(), o.address2(), o.city(), o.state(), o.zip()));
+            //name
+            String[] sp = o.name().split(" ");
+            String new_name = sp[0]+" Smith";
+            //dob
+            Date new_date = o.dob();
+            Calendar c = Calendar.getInstance();
+            c.setTime(new_date);
+            c.add(Calendar.DATE, 1);
+            new_date = c.getTime();
+            newOwners.add(new Owner(new_name, o.id(), new_date, new_ssn, o.address(), o.address2(), o.city(), o.state(), o.zip()));
         }
+
+        List<RegisterEntry> newRegisters = new ArrayList<>();
+        for (RegisterEntry r : rawObjects.registerEntries()) {
+            //amount
+            double new_amount = r.amount()+100;
+            //transaction date
+            Date new_date = r.date();
+            Calendar c = Calendar.getInstance();
+            c.setTime(new_date);
+            c.add(Calendar.DATE, 1);
+            new_date = c.getTime();
+            newRegisters.add(new RegisterEntry(r.id(),r.accountId(),r.entryName(),new_amount, new_date));
+        }
+
         Collection<Owner> obfuscatedOwners = newOwners;
         Collection<Account> obfuscatedAccounts = rawObjects.accounts();
         Collection<RegisterEntry> obfuscatedRegisterEntries = rawObjects.registerEntries();
